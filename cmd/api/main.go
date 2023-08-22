@@ -1,14 +1,13 @@
 package main
 
 import (
+	"authentication/data"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
-
-	"authentication/data"
 
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
@@ -30,10 +29,10 @@ func main() {
 	// connect to DB
 	conn := connectToDB()
 	if conn == nil {
-		log.Panic("Can't connect to database")
+		log.Panic("Can't connect to Postgres!")
 	}
 
-	// setup config
+	// set up config
 	app := Config{
 		DB:     conn,
 		Models: data.New(conn),
@@ -70,10 +69,10 @@ func connectToDB() *sql.DB {
 	for {
 		connection, err := openDB(dsn)
 		if err != nil {
-			log.Println("Postgres not yet ready")
+			log.Println("Postgres not yet ready ...")
 			counts++
 		} else {
-			log.Println("Connected to Postgres")
+			log.Println("Connected to Postgres!")
 			return connection
 		}
 
@@ -81,7 +80,8 @@ func connectToDB() *sql.DB {
 			log.Println(err)
 			return nil
 		}
-		log.Println("Backing off for two seconds")
+
+		log.Println("Backing off for two seconds....")
 		time.Sleep(2 * time.Second)
 		continue
 	}
